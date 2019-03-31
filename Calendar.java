@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.YearMonth;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
 import java.util.Scanner;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -42,8 +45,8 @@ public class Calendar extends Application
    private int curMonth = date.getMonthValue();
    private int curYear = date.getYear();
    private int curDay =1;
-   Text txtcurMonth = new Text(date.getMonth()+"");
-   Text txtcurYear = new Text(date.getYear()+"");
+   private Text txtcurMonth = new Text(date.getMonth()+"");
+   private Text txtcurYear = new Text(date.getYear()+"");
    private VBox appointmentPane = new VBox(20);
    private int curRow=0;
    private int curCol=0;
@@ -85,7 +88,9 @@ public class Calendar extends Application
        
        
        HBox filler = new HBox();
-      filler.setHgrow(filler,Priority.ALWAYS);
+       filler.setHgrow(filler,Priority.ALWAYS);
+       txtcurMonth.setFont(Font.font(20));
+       txtcurYear.setFont(Font.font(20));
        
        Button leftNav = new Button("<");
        Button rightNav = new Button(">");
@@ -100,20 +105,20 @@ public class Calendar extends Application
                
                curMonth--;
                setTopText();
-               topH.getChildren().removeAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
+               topH.getChildren().clear();
                topH.getChildren().addAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
                displayAppointments(setupMonthPane(curYear,curMonth));
-            //   containerPane.setCenter(setupMonthPane(curYear,curMonth));
+            
            }
            else{
                
                curMonth = 12;
                curYear -= 1; 
                setTopText();
-               topH.getChildren().removeAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
+               topH.getChildren().clear();
                topH.getChildren().addAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
-                displayAppointments(setupMonthPane(curYear,curMonth));
-             //  containerPane.setCenter(setupMonthPane(curYear,curMonth));
+               displayAppointments(setupMonthPane(curYear,curMonth));
+             
            }
       });
         rightNav.setOnMouseClicked(e->{
@@ -121,19 +126,19 @@ public class Calendar extends Application
              {
                  curMonth++;
                  setTopText();
-                 topH.getChildren().removeAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
+                 topH.getChildren().clear();
                  topH.getChildren().addAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
-                  displayAppointments(setupMonthPane(curYear,curMonth));
-               //  containerPane.setCenter(setupMonthPane(curYear,curMonth));
+                 displayAppointments(setupMonthPane(curYear,curMonth));
+             
              }
              else{
                  curMonth =1;
                  curYear++;
                  setTopText();
-                 topH.getChildren().removeAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
+                 topH.getChildren().clear();
                  topH.getChildren().addAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
-                  displayAppointments(setupMonthPane(curYear,curMonth));
-                // containerPane.setCenter(setupMonthPane(curYear,curMonth));
+                 displayAppointments(setupMonthPane(curYear,curMonth));
+                
              }
              
          });
@@ -143,16 +148,16 @@ public class Calendar extends Application
             curMonth = date.getMonthValue();
             curYear = date.getYear();
             setTopText();
-            topH.getChildren().removeAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
+            topH.getChildren().clear();
             topH.getChildren().addAll(txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
         });
         todayNav.setOnMouseClicked(e->{
-         //  displayAppointments(setupMonthPane(curYear,curMonth));
+         
         
            curMonth = date.getMonthValue();
            curYear = date.getYear();
            setTopText();
-           topH.getChildren().removeAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
+           topH.getChildren().clear();
            topH.getChildren().addAll(txtcurMonth,txtcurYear,filler,leftNav,yearNav,todayNav,rightNav);
            displayAppointments(setupMonthPane(curYear,curMonth));
         });
@@ -175,7 +180,7 @@ public class Calendar extends Application
    public GridPane setupMonthPane(int yearValue, int monthValue)
    {
       GridPane monthPane = new GridPane();
-      containerPane.setMargin(monthPane,new Insets(10));
+      containerPane.setMargin(monthPane,new Insets(20));
       //TO BE COMPLETED AS REQUIRED IN THE INSTRUCTIONS
          int numCols = 7 ;
          int numRows = 7 ;
@@ -223,27 +228,25 @@ public class Calendar extends Application
         //TO BE COMPLETED AS REQUIRED IN THE INSTRUCTIONS
       int curDate = date.getDayOfMonth();
       LocalDate localDate = LocalDate.of(yearValue, monthValue, 01);
-      DayOfWeek dayOfWeek = localDate.getDayOfWeek();
-     
-      int dayIntValue = dayOfWeek.getValue();
-     if(dayOfWeek.getValue() == 7)
+      int dayIntValue = localDate.getDayOfWeek().getValue();
+   
+     if(dayIntValue == 7)
      {
          dayIntValue = 0;
      }
-      YearMonth yearMonthObject = YearMonth.of(yearValue,monthValue );
-      int daysInMonth = yearMonthObject.lengthOfMonth();
+      int daysInMonth = localDate.lengthOfMonth();
       int start = 1;
      
       int lengthOfPreviousMonth;
     if(monthValue > 1)
     {    
-        YearMonth previousMonth = YearMonth.of(yearValue, monthValue -1);
-        lengthOfPreviousMonth = previousMonth.lengthOfMonth();
+       // YearMonth previousMonth = YearMonth.of(yearValue, monthValue -1);
+        lengthOfPreviousMonth = LocalDate.of(yearValue,monthValue -1,1).lengthOfMonth();
     }
     else
     {
-        YearMonth previousMonth = YearMonth.of(yearValue -1, 12);
-        lengthOfPreviousMonth = previousMonth.lengthOfMonth();
+       // YearMonth previousMonth = YearMonth.of(yearValue -1, 12);
+        lengthOfPreviousMonth = LocalDate.of(yearValue -1, monthValue, 1).lengthOfMonth();
     }
         
 
@@ -256,6 +259,8 @@ public class Calendar extends Application
      {
         for(int col = 0;  col < 7 ; col++)
         {
+            
+            VBox vb = new VBox();
             StackPane s = new StackPane();
             
             if(prevMonthStart <= lengthOfPreviousMonth)
@@ -264,45 +269,49 @@ public class Calendar extends Application
                 num.setFill(Color.GREY);
                 prevMonthStart++;
                 s.getChildren().add(num);
-                monthGP.add(s,col,row);
+                vb.getChildren().add(s);
+                vb.setAlignment(Pos.CENTER);
+                monthGP.add(vb,col,row);
                 
             }
             else if(start <= daysInMonth){
-                if(start == curDate && date.getMonthValue() == monthValue)
+                if(start == curDate && date.getMonthValue() == monthValue && date.getYear() == yearValue)
                 {
                     Circle cir = new Circle(s.getLayoutX(),s.getLayoutY(),8);
                     cir.setFill(Color.RED);
                     Text cur = new Text(start +"");
                     cur.setFill(Color.WHITE);
-                    Text currentRow = new Text(row+"");
-                    Text currentCol = new Text(col+"");
+                   
                     cur.setOnMouseClicked(e->{
                         
                         
-                         curDay = Integer.parseInt(cur.getText());
-                        curRow = Integer.parseInt(currentRow.getText());
-                        curCol = Integer.parseInt(currentCol.getText());
+                        curDay = Integer.parseInt(cur.getText());
+                       
+                        clear();
                         appointmentStage.show();
                        
                     });
                     s.getChildren().addAll(cir,cur);
-                    monthGP.add(s,col,row);
+                    vb.getChildren().add(s);
+                    vb.setAlignment(Pos.CENTER);
+                    monthGP.add(vb,col,row);
                     start++;
                 }
                 else{
                     Text weekDay = new Text(start +"");
-                    Text currentRow = new Text(row+"");
-                    Text currentCol = new Text(col+"");
+               
                     weekDay.setOnMouseClicked(e->{
-                        curRow = Integer.parseInt(currentRow.getText());
-                        curCol = Integer.parseInt(currentCol.getText());
+                        
                         
                         curDay = Integer.parseInt(weekDay.getText());
+                        clear();
                         appointmentStage.show();
                          
                     });
                     s.getChildren().add(weekDay);
-                    monthGP.add(s,col,row);
+                    vb.getChildren().add(s);
+                    vb.setAlignment(Pos.CENTER);
+                    monthGP.add(vb,col,row);
                     start++;
                 }
             }
@@ -327,8 +336,8 @@ public class Calendar extends Application
       GridPane twelve = new GridPane();
       twelve.setAlignment(Pos.CENTER);
       twelve.setHgap(20);
-    //  twelve.setVgap(5);
-      //TO BE COMPLETED AS REQUIRED IN THE INSTRUCTIONS
+      BorderPane.setMargin(twelve,new Insets(10,0,0,0));
+   
       int monthCounter = 0;
        for(int row = 0 ; row<3 ;row++)
        {
@@ -347,30 +356,16 @@ public class Calendar extends Application
                Text txtMonth = new Text(months[monthCounter]);
                txtMonth.setTextAlignment(TextAlignment.CENTER);
             
-               GridPane gPane = new GridPane();
-               gPane =  setupMonthPane(2019,monthCounter +1);
-                
-    
-                
-                monthCounter++;
+               GridPane gPane = setupMonthPane(2019,monthCounter+1);
+               monthCounter++;
              
-                gPane.setGridLinesVisible(false);
-                gPane.setHgap(20);
+               gPane.setGridLinesVisible(false);
+               gPane.setHgap(20);
                 
-              
+               vb1.getChildren().addAll(txtMonth,gPane);
+               vb1.setAlignment(Pos.CENTER);
                 
-            
-               
-                
-              
-                vb1.getChildren().addAll(txtMonth,gPane);
-                
-                  vb1.setAlignment(Pos.CENTER);
-                 
-               
-              
-                twelve.setMargin(vb1,new Insets(0,10,0,0));
-               
+               twelve.setMargin(vb1,new Insets(0,10,0,0));
                twelve.add(vb1, col, row);
                
             
@@ -392,7 +387,7 @@ public class Calendar extends Application
    public void setupAppointmentPane()
    {
         //TO BE COMPLETED AS REQUIRED IN THE INSTRUCTIONS
-       
+        LocalDateTime newDate = LocalDateTime.now();
         Label lblTitle = new Label("Title:");
         TextField txtField = new TextField("");
         
@@ -404,19 +399,17 @@ public class Calendar extends Application
         {
             
             String leadingZero = String.format ("%02d", i);
-         
             cbHour.getItems().add((leadingZero));
         }
-        cbHour.setValue(String.format("%02d", date.getHour()));
+      cbHour.setValue(String.format("%02d", newDate.getHour()));      
         for(int i = 0; i < 60; i++)
         {
             
-            
-                String leadingZero = String.format("%02d",i);
-                cbMin.getItems().add(leadingZero);
+            String leadingZero = String.format("%02d",i);
+            cbMin.getItems().add(leadingZero);
             
         }
-        cbMin.setValue(String.format("%02d", date.getMinute()));
+         cbMin.setValue(String.format("%02d", newDate.getMinute()));
         
         Button btnClear = new Button("Clear");
         Button btnSubmit = new Button("Submit");
@@ -444,7 +437,8 @@ public class Calendar extends Application
         hbButtons.setMargin(btnSubmit,new Insets(20,0,0,10));
    
         btnClear.setOnMouseClicked(e->{
-            clear(txtField,cbHour,cbMin);
+            clear();
+            
         
         });
         
@@ -475,24 +469,44 @@ public class Calendar extends Application
                String[] s = line.split(",");
                if(Integer.parseInt(s[1]) == curYear && Integer.parseInt(s[2]) == curMonth)
                {
-                     HBox hbApp = new HBox(10);
-                   Text txtApp = new Text(s[4] +":" + s[5] + " " + s[0]);
-                   txtApp.setFill(Color.GREEN);
-                   hbApp.getChildren().add(txtApp);
-                 hbApp.setAlignment(Pos.BOTTOM_CENTER);
-                 hbApp.setPadding(new Insets(0,0,20,0));
-                   monthPane.add(hbApp, Integer.parseInt(s[s.length-2]), Integer.parseInt(s[s.length-1]));
+                   List list = monthPane.getChildren();
+                   Iterator<Node> iterator = list.listIterator();
+                   while(iterator.hasNext())
+                   {
+                       Node node = iterator.next();
+                       if(node instanceof VBox)
+                       {
+                           List vBoxList = ((VBox)node).getChildren();
+                           Iterator<Node> vBoxIterator = vBoxList.listIterator();
+                           while(vBoxIterator.hasNext())
+                           {
+                               Node vBoxNode = vBoxIterator.next();
+                               if(vBoxNode instanceof StackPane)
+                               {
+                                   StackPane sta = (StackPane)vBoxNode;
+                                   for(Node spNode: sta.getChildren())
+                                   {
+                                       if(spNode instanceof Text)
+                                       {
+                                           Text txt = (Text) spNode;
+                                           int temp = Integer.parseInt(txt.getText());
+                                           if(temp == Integer.parseInt(s[3]) && txt.getFill() == Color.BLACK || temp == Integer.parseInt(s[3]) && txt.getFill() == Color.WHITE)
+                                           {
+                                               Label lbl = new Label(s[4]+":" + s[5]+" " + s[0]);
+                                               lbl.setStyle("-fx-text-fill:green");
+                                               lbl.setWrapText(true);
+                                               lbl.setTextAlignment(TextAlignment.CENTER);
+                                               ((ListIterator<Node>) vBoxIterator).add(lbl);
+                                           }
+                                       }
+                                   }
+                               }
+                           }   
+                       }
+                   }
+               
                }
-               if(Integer.parseInt(s[1]) == curYear && Integer.parseInt(s[2]) == curMonth && Integer.parseInt(s[3])== curDay)
-               {
-                   HBox hbApp = new HBox(10);
-                   Text txtApp = new Text(s[4] +":" + s[5] + " " + s[0]);
-                   txtApp.setFill(Color.GREEN);
-                   hbApp.getChildren().add(txtApp);
-                  hbApp.setAlignment(Pos.BOTTOM_CENTER);
-                  hbApp.setPadding(new Insets(0,0,20,0));
-                   monthPane.add(hbApp, curCol, curRow);
-               }
+           
            }
        }
        catch(FileNotFoundException ex)
@@ -503,16 +517,11 @@ public class Calendar extends Application
 
    }
 
-   public void clear(TextField txtField, ComboBox hours,ComboBox mins)
+   public void clear()
    {
       //TO BE COMPLETED AS REQUIRED IN THE INSTRUCTIONS
-      txtField.clear();
-      String zeroHour = String.format ("%02d", date.getHour());
-      hours.setValue(zeroHour);
-      
-      String zeroMin = String.format("%02d", date.getMinute());
-      
-      mins.setValue(zeroMin);
+     appointmentPane.getChildren().clear();
+     setupAppointmentPane();
       
       
    }
@@ -527,21 +536,12 @@ public class Calendar extends Application
       
         FileWriter writerObject = new FileWriter(apps,true);
         
-        writerObject.write(txt.getText()+"");
-        writerObject.write(",");
-        writerObject.write(curYear +"");
-        writerObject.write(",");
-        writerObject.write(curMonth +"");
-        writerObject.write(",");
-        writerObject.write(curDay +"");
-        writerObject.write(",");
-        writerObject.write(hour.getValue()+"");
-        writerObject.write(",");
-        writerObject.write(min.getValue()+"");
-        writerObject.write(",");
-        writerObject.write(curCol+"");
-        writerObject.write(",");
-        writerObject.write(curRow+"");
+        writerObject.write(txt.getText()+",");
+        writerObject.write(curYear +",");
+        writerObject.write(curMonth +",");
+        writerObject.write(curDay +",");
+        writerObject.write(hour.getValue()+",");
+        writerObject.write(min.getValue()+",");
         writerObject.write("\n");
         
         writerObject.close();
@@ -560,3 +560,4 @@ public class Calendar extends Application
       launch(args);
    }
 }
+
