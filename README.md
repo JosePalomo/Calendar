@@ -10,6 +10,8 @@ At the start of the program the view is of the current month with the current da
 Appointments can be made by simply clicking on a date within the current month. This then prompts a pop up to display allowing you to set a title for your appointment and also set a time for the appointment.
 
 # Screenshots
+<img width="750" alt="calMonthView" src="https://user-images.githubusercontent.com/46798243/56002898-e8f29e00-5c89-11e9-8689-12061321a24e.png">
+
 # Built With
  JavaFx
  # Author
