@@ -16,6 +16,7 @@ Current Month View
 
 12 Month View
 
+<img width="750" alt="12MonthView" src="https://user-images.githubusercontent.com/46798243/56003089-b8f7ca80-5c8a-11e9-82ba-136ae5f85354.png">
 
 
 # Built With
